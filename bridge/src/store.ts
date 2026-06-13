@@ -79,6 +79,24 @@ export class InMemoryStore {
     return connection;
   }
 
+  getConnectionByCode(connectionCode: string): SiteConnection | undefined {
+    const normalizedCode = connectionCode.trim().toUpperCase();
+    const connection = [...this.connections.values()].find(
+      (candidate) => candidate.connection_code === normalizedCode,
+    );
+
+    return connection ? this.getConnection(connection.connection_id) : undefined;
+  }
+
+  completeConnectionByCode(connectionCode: string, payload: SiteRegistrationPayload): { site: Site; connection: SiteConnection } | undefined {
+    const connection = this.getConnectionByCode(connectionCode);
+    if (!connection) {
+      return undefined;
+    }
+
+    return this.completeConnection(connection.connection_id, payload);
+  }
+
   completeConnection(connectionId: string, payload: SiteRegistrationPayload): { site: Site; connection: SiteConnection } | undefined {
     const connection = this.getConnection(connectionId);
     if (!connection || connection.status !== "pending") {
@@ -96,7 +114,7 @@ export class InMemoryStore {
       plugin_version: payload.plugin_version,
       independent_analytics_active: payload.independent_analytics_active,
       independent_analytics_version: payload.independent_analytics_version,
-      bridge_token_preview: `bt_${crypto.randomBytes(4).toString("hex")}`,
+      bridge_token: `bt_${crypto.randomBytes(32).toString("hex")}`,
       last_seen_at: now,
       created_at: now,
       updated_at: now,
