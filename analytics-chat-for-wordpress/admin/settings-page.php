@@ -11,6 +11,7 @@
  * @var string $bridge_site_id
  * @var string $bridge_status
  * @var string $bridge_connected_at
+ * @var array $update_status
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -29,6 +30,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php if ( isset( $_GET['acfw_key_revoked'] ) ) : ?>
 		<div class="notice notice-success"><p><?php echo esc_html__( 'API key revoked.', 'analytics-chat-for-wordpress' ); ?></p></div>
+	<?php endif; ?>
+
+	<?php if ( isset( $_GET['acfw_update_check'] ) ) : ?>
+		<div class="notice notice-info"><p><?php echo esc_html__( 'GitHub update check completed.', 'analytics-chat-for-wordpress' ); ?></p></div>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $this->admin_notice['message'] ) ) : ?>
@@ -124,6 +129,30 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<input type="hidden" name="action" value="acfw_revoke_key">
 		<?php wp_nonce_field( 'acfw_revoke_key' ); ?>
 		<?php submit_button( __( 'Revoke API key', 'analytics-chat-for-wordpress' ), 'delete', 'submit', false ); ?>
+	</form>
+
+	<h2><?php echo esc_html__( 'Updates', 'analytics-chat-for-wordpress' ); ?></h2>
+	<table class="widefat striped" style="max-width: 900px; margin-bottom: 16px;">
+		<tbody>
+			<tr>
+				<th scope="row"><?php echo esc_html__( 'Installed version', 'analytics-chat-for-wordpress' ); ?></th>
+				<td><code><?php echo esc_html( ACFW_VERSION ); ?></code></td>
+			</tr>
+			<tr>
+				<th scope="row"><?php echo esc_html__( 'GitHub release status', 'analytics-chat-for-wordpress' ); ?></th>
+				<td>
+					<?php echo esc_html( (string) ( $update_status['message'] ?? __( 'Unknown.', 'analytics-chat-for-wordpress' ) ) ); ?>
+					<?php if ( ! empty( $update_status['url'] ) ) : ?>
+						<a href="<?php echo esc_url( (string) $update_status['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html__( 'View release', 'analytics-chat-for-wordpress' ); ?></a>
+					<?php endif; ?>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+		<input type="hidden" name="action" value="acfw_check_updates">
+		<?php wp_nonce_field( 'acfw_check_updates' ); ?>
+		<?php submit_button( __( 'Check GitHub for updates', 'analytics-chat-for-wordpress' ), 'secondary', 'submit', false ); ?>
 	</form>
 
 	<h2><?php echo esc_html__( 'Access Limits', 'analytics-chat-for-wordpress' ); ?></h2>
