@@ -36,7 +36,6 @@ final class ACFW_Plugin {
 
 	public function init(): void {
 		$this->updater->init();
-		add_filter( 'rest_pre_dispatch', array( $this->rest, 'authenticate_pre_dispatch' ), 10, 3 );
 		add_action( 'rest_api_init', array( $this->rest, 'register_routes' ) );
 		add_action( 'admin_menu', array( $this->settings, 'register_admin_page' ) );
 		add_action( 'admin_init', array( $this->settings, 'register_settings' ) );
