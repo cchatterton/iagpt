@@ -68,7 +68,7 @@ final class ACFW_Updater {
 			'name'          => 'Analytics Chat for WordPress',
 			'slug'          => self::SLUG,
 			'version'       => $this->release_version( $release ),
-			'author'        => 'AlphaSys',
+			'author'        => 'Techn',
 			'homepage'      => $this->github_url(),
 			'download_link' => $this->release_package_url( $release ),
 			'requires'      => '6.0',

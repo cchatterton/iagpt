@@ -2,8 +2,8 @@
 
 Read-only WordPress plugin that lets a Custom GPT query Independent Analytics data through authenticated REST API endpoints.
 
-Author: AlphaSys  
-Version: 0.1.4  
+Author: Techn  
+Version: 0.1.5  
 Status: MVP  
 
 ## Purpose
@@ -38,7 +38,7 @@ openapi/
 readme.md
 ```
 
-The original plugin specification called for the `includes/` class-based structure, so this plugin intentionally does not use the smaller `functions/` scaffold from the default AlphaSys/Techn plugin standard.
+The original plugin specification called for the `includes/` class-based structure, so this plugin intentionally does not use the smaller `functions/` scaffold from the default Techn plugin standard.
 
 ## Setup
 
@@ -132,8 +132,8 @@ If a compatible aggregate table cannot be detected, the plugin returns a structu
 
 ## Important Notes
 
-- Author is declared as AlphaSys.
-- Author URL is https://alphasys.com.au.
+- Author is declared as Techn.
+- Author URL is https://techn.com.au.
 - Plugin URL is https://github.com/cchatterton/iagpt.
 - Prefix is `acfw`.
 - REST namespace is `acfw/v1`.

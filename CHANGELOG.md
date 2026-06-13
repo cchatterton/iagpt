@@ -2,11 +2,17 @@
 
 All notable changes to Analytics Chat for WordPress are recorded here.
 
+## 0.1.5 - 2026-06-13
+
+- Changed plugin author branding to Techn.
+- Updated the plugin author URL to https://techn.com.au.
+- Updated release documentation to follow the Techn plugin naming convention.
+
 ## 0.1.4 - 2026-06-13
 
 - Simplified API key management so admins see either generate or revoke, never both.
 - Removed GitHub update checking from the Analytics Chat settings page.
-- Added plugin header links for AlphaSys and the GitHub repository.
+- Added plugin header links for the author and the GitHub repository.
 - Added a GitHub link to the WordPress Plugins page row metadata.
 
 ## 0.1.3 - 2026-06-13
@@ -19,7 +25,7 @@ All notable changes to Analytics Chat for WordPress are recorded here.
 ## 0.1.2 - 2026-06-13
 
 - Applied the WordPress Plugin Build Standard where it fits the existing plugin specification.
-- Changed plugin author declaration to AlphaSys.
+- Changed plugin author declaration.
 - Replaced REST `__return_true` route permissions with a named authentication permission callback.
 - Added structured release notes in this changelog.
 - Updated plugin readme metadata, folder notes, important notes, and future considerations.
