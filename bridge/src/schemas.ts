@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const siteRegistrationSchema = z.object({
+  connection_code: z.string().min(4).max(64).optional(),
   site_name: z.string().min(1).max(120),
   site_url: z.string().url(),
   wordpress_version: z.string().max(40).optional(),
