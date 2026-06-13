@@ -7,6 +7,10 @@
  * @var ACFW_Auth $auth
  * @var ACFW_Independent_Analytics $analytics
  * @var array $diagnostics
+ * @var string $bridge_url
+ * @var string $bridge_site_id
+ * @var string $bridge_status
+ * @var string $bridge_connected_at
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -25,6 +29,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php if ( isset( $_GET['acfw_key_revoked'] ) ) : ?>
 		<div class="notice notice-success"><p><?php echo esc_html__( 'API key revoked.', 'analytics-chat-for-wordpress' ); ?></p></div>
+	<?php endif; ?>
+
+	<?php if ( ! empty( $this->admin_notice['message'] ) ) : ?>
+		<div class="notice notice-<?php echo 'error' === $this->admin_notice['type'] ? 'error' : 'success'; ?>">
+			<p><?php echo esc_html( (string) $this->admin_notice['message'] ); ?></p>
+		</div>
 	<?php endif; ?>
 
 	<h2><?php echo esc_html__( 'Status', 'analytics-chat-for-wordpress' ); ?></h2>
@@ -46,8 +56,62 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<th scope="row"><?php echo esc_html__( 'API key status', 'analytics-chat-for-wordpress' ); ?></th>
 				<td><?php echo $auth->has_key() ? esc_html__( 'Configured', 'analytics-chat-for-wordpress' ) : esc_html__( 'Not configured', 'analytics-chat-for-wordpress' ); ?></td>
 			</tr>
+			<tr>
+				<th scope="row"><?php echo esc_html__( 'Hosted bridge status', 'analytics-chat-for-wordpress' ); ?></th>
+				<td><?php echo 'connected' === $bridge_status ? esc_html__( 'Connected', 'analytics-chat-for-wordpress' ) : esc_html__( 'Not connected', 'analytics-chat-for-wordpress' ); ?></td>
+			</tr>
 		</tbody>
 	</table>
+
+	<h2><?php echo esc_html__( 'Hosted Bridge Connection', 'analytics-chat-for-wordpress' ); ?></h2>
+	<p><?php echo esc_html__( 'Use this section when connecting the site to the public Analytics Chat bridge. The bridge token is stored securely and is never displayed.', 'analytics-chat-for-wordpress' ); ?></p>
+
+	<table class="widefat striped" style="max-width: 900px; margin-bottom: 16px;">
+		<tbody>
+			<tr>
+				<th scope="row"><?php echo esc_html__( 'Connection status', 'analytics-chat-for-wordpress' ); ?></th>
+				<td><?php echo 'connected' === $bridge_status ? esc_html__( 'Connected', 'analytics-chat-for-wordpress' ) : esc_html__( 'Not connected', 'analytics-chat-for-wordpress' ); ?></td>
+			</tr>
+			<tr>
+				<th scope="row"><?php echo esc_html__( 'Bridge site ID', 'analytics-chat-for-wordpress' ); ?></th>
+				<td><?php echo '' !== $bridge_site_id ? '<code>' . esc_html( $bridge_site_id ) . '</code>' : esc_html__( 'Not assigned', 'analytics-chat-for-wordpress' ); ?></td>
+			</tr>
+			<tr>
+				<th scope="row"><?php echo esc_html__( 'Connected at', 'analytics-chat-for-wordpress' ); ?></th>
+				<td><?php echo '' !== $bridge_connected_at ? esc_html( $bridge_connected_at . ' UTC' ) : esc_html__( 'Not connected', 'analytics-chat-for-wordpress' ); ?></td>
+			</tr>
+		</tbody>
+	</table>
+
+	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="max-width: 900px;">
+		<input type="hidden" name="action" value="acfw_connect_bridge">
+		<?php wp_nonce_field( 'acfw_connect_bridge' ); ?>
+		<table class="form-table" role="presentation">
+			<tr>
+				<th scope="row"><label for="acfw_bridge_url"><?php echo esc_html__( 'Bridge URL', 'analytics-chat-for-wordpress' ); ?></label></th>
+				<td>
+					<input name="acfw_bridge_url" id="acfw_bridge_url" type="url" class="regular-text" value="<?php echo esc_attr( $bridge_url ); ?>" placeholder="https://app.analyticschat.example">
+					<p class="description"><?php echo esc_html__( 'The hosted bridge base URL. Do not include /api/v1.', 'analytics-chat-for-wordpress' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="acfw_connection_code"><?php echo esc_html__( 'Connection code', 'analytics-chat-for-wordpress' ); ?></label></th>
+				<td>
+					<input name="acfw_connection_code" id="acfw_connection_code" type="text" class="regular-text" autocomplete="one-time-code">
+					<p class="description"><?php echo esc_html__( 'Paste the short code returned by the Analytics Chat GPT when you choose to connect a new site.', 'analytics-chat-for-wordpress' ); ?></p>
+				</td>
+			</tr>
+		</table>
+		<?php submit_button( __( 'Connect this site', 'analytics-chat-for-wordpress' ) ); ?>
+	</form>
+
+	<?php if ( 'connected' === $bridge_status ) : ?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="acfw_disconnect_bridge">
+			<?php wp_nonce_field( 'acfw_disconnect_bridge' ); ?>
+			<?php submit_button( __( 'Disconnect bridge', 'analytics-chat-for-wordpress' ), 'delete', 'submit', false ); ?>
+		</form>
+	<?php endif; ?>
 
 	<h2><?php echo esc_html__( 'API Key', 'analytics-chat-for-wordpress' ); ?></h2>
 	<p><?php echo esc_html__( 'Use this key as a Bearer token in your GPT Action. The full key is shown only once after generation.', 'analytics-chat-for-wordpress' ); ?></p>
