@@ -14,14 +14,16 @@ final class ACFW_Plugin {
 
 	private ACFW_Auth $auth;
 	private ACFW_Independent_Analytics $analytics;
+	private ACFW_Updater $updater;
 	private ACFW_REST $rest;
 	private ACFW_Settings $settings;
 
 	private function __construct() {
 		$this->auth      = new ACFW_Auth();
 		$this->analytics = new ACFW_Independent_Analytics();
+		$this->updater   = new ACFW_Updater();
 		$this->rest      = new ACFW_REST( $this->auth, $this->analytics );
-		$this->settings  = new ACFW_Settings( $this->auth, $this->analytics );
+		$this->settings  = new ACFW_Settings( $this->auth, $this->analytics, $this->updater );
 	}
 
 	public static function instance(): ACFW_Plugin {
@@ -33,6 +35,7 @@ final class ACFW_Plugin {
 	}
 
 	public function init(): void {
+		$this->updater->init();
 		add_filter( 'rest_pre_dispatch', array( $this->rest, 'authenticate_pre_dispatch' ), 10, 3 );
 		add_action( 'rest_api_init', array( $this->rest, 'register_routes' ) );
 		add_action( 'admin_menu', array( $this->settings, 'register_admin_page' ) );
