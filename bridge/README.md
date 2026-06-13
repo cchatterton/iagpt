@@ -45,12 +45,15 @@ GET  /health
 GET  /api/v1/sites
 POST /api/v1/sites/connect/start
 GET  /api/v1/sites/connect/:connection_id/status
+POST /api/v1/internal/connections/complete
 POST /api/v1/internal/connections/:connection_id/complete
 DELETE /api/v1/sites/:site_id
 GET  /api/v1/sites/:site_id/site-summary
 ```
 
-`POST /api/v1/internal/connections/:connection_id/complete` is a temporary development endpoint standing in for the future WordPress plugin callback.
+`POST /api/v1/internal/connections/complete` is the temporary WordPress plugin callback. It accepts the one-time `connection_code` returned by `POST /sites/connect/start`.
+
+`POST /api/v1/internal/connections/:connection_id/complete` is retained for local development and test fixtures.
 
 ## Next Production Tasks
 
