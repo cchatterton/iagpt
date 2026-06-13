@@ -10,7 +10,7 @@ export interface Site {
   plugin_version?: string;
   independent_analytics_active?: boolean;
   independent_analytics_version?: string | null;
-  bridge_token_preview?: string;
+  bridge_token: string;
   last_seen_at: string | null;
   created_at: string;
   updated_at: string;
@@ -29,6 +29,7 @@ export interface SiteConnection {
 }
 
 export interface SiteRegistrationPayload {
+  connection_code?: string;
   site_name: string;
   site_url: string;
   wordpress_version?: string;
