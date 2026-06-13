@@ -1,0 +1,175 @@
+openapi: 3.1.0
+info:
+  title: Analytics Chat for WordPress
+  version: 1.0.0
+  description: Read-only WordPress analytics bridge for Independent Analytics data. Replace the example server URL with your own site URL before importing into GPT Builder.
+servers:
+  - url: https://example.com/wp-json/acfw/v1
+security:
+  - bearerAuth: []
+paths:
+  /site-summary:
+    get:
+      operationId: getSiteSummary
+      summary: Get overall website analytics summary.
+      parameters:
+        - $ref: "#/components/parameters/Period"
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: compare
+          in: query
+          schema:
+            type: string
+            enum: [previous_period, none]
+      responses:
+        "200":
+          description: Site summary metrics.
+  /top-content:
+    get:
+      operationId: getTopContent
+      summary: Get top performing WordPress content.
+      parameters:
+        - $ref: "#/components/parameters/Period"
+        - name: post_type
+          in: query
+          schema:
+            type: string
+            example: any
+        - $ref: "#/components/parameters/Limit"
+        - name: order_by
+          in: query
+          schema:
+            type: string
+            enum: [views, visitors, conversions, conversion_rate, engagement]
+      responses:
+        "200":
+          description: List of top content.
+  /content-performance:
+    get:
+      operationId: getContentPerformance
+      summary: Get analytics for a specific page or post.
+      parameters:
+        - name: post_id
+          in: query
+          schema:
+            type: integer
+        - name: url
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/Period"
+        - name: compare
+          in: query
+          schema:
+            type: string
+            enum: [previous_period, none]
+      responses:
+        "200":
+          description: Content performance data.
+  /content-opportunities:
+    get:
+      operationId: getContentOpportunities
+      summary: Find content opportunities and risks.
+      parameters:
+        - $ref: "#/components/parameters/Period"
+        - $ref: "#/components/parameters/Limit"
+        - name: opportunity_type
+          in: query
+          schema:
+            type: string
+            enum: [traffic_no_conversion, declining, rising, high_exit, stale_but_visited, all]
+      responses:
+        "200":
+          description: Content opportunities.
+  /referrers:
+    get:
+      operationId: getReferrers
+      summary: Get referrer and traffic source performance.
+      parameters:
+        - $ref: "#/components/parameters/Period"
+        - name: post_id
+          in: query
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Referrer data.
+  /campaigns:
+    get:
+      operationId: getCampaigns
+      summary: Get campaign performance where available.
+      parameters:
+        - $ref: "#/components/parameters/Period"
+        - name: campaign
+          in: query
+          schema:
+            type: string
+        - name: source
+          in: query
+          schema:
+            type: string
+        - name: medium
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Campaign performance.
+  /forms:
+    get:
+      operationId: getForms
+      summary: Get form conversion performance where available.
+      parameters:
+        - $ref: "#/components/parameters/Period"
+        - name: form_id
+          in: query
+          schema:
+            type: string
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Form conversion data.
+  /user-journey:
+    get:
+      operationId: getUserJourney
+      summary: Get anonymised user journey patterns where available.
+      parameters:
+        - $ref: "#/components/parameters/Period"
+        - name: post_id
+          in: query
+          schema:
+            type: integer
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Aggregated journey patterns.
+components:
+  parameters:
+    Period:
+      name: period
+      in: query
+      schema:
+        type: string
+        example: 30d
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        example: 20
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
