@@ -19,7 +19,7 @@ This is a functional skeleton for testing the GPT conversation flow:
 - start a new site connection
 - check connection status
 - simulate completing a WordPress connection
-- proxy one site summary request shape
+- proxy site summary requests to the connected WordPress plugin
 
 The current store is in-memory and resets when the process restarts. Replace it with Postgres/Supabase before production.
 
@@ -61,5 +61,5 @@ GET  /api/v1/sites/:site_id/site-summary
 - Add user auth/OAuth for public GPT users.
 - Encrypt per-site WordPress tokens.
 - Add WordPress plugin connection UI.
-- Proxy all analytics endpoints.
+- Proxy the remaining analytics endpoints.
 - Add a bridge OpenAPI schema for GPT Builder.
