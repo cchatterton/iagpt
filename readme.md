@@ -2,6 +2,10 @@
 
 Analytics Chat for WordPress is a read-only WordPress plugin that lets a Custom GPT query Independent Analytics data from a live production WordPress site.
 
+Author: AlphaSys  
+Version: 0.1.2  
+Status: MVP  
+
 The MVP does not require external infrastructure. Each site owner installs the plugin on their own WordPress site, generates an API key, and configures a Custom GPT Action that calls that site directly.
 
 ## What It Does
@@ -121,6 +125,14 @@ The future hosted bridge architecture is documented in `docs/public-gpt-bridge-a
 ## GitHub Updates
 
 The plugin includes a GitHub release updater from version `0.1.1` onward.
+
+Every plugin change must include:
+
+- a version bump in `analytics-chat-for-wordpress/analytics-chat-for-wordpress.php`
+- a matching `ACFW_VERSION` bump
+- release notes in `CHANGELOG.md`
+- a GitHub Release tag matching the version, such as `v0.1.2`
+- an attached `analytics-chat-for-wordpress.zip` release asset
 
 To publish an update that WordPress can install:
 
