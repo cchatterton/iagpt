@@ -140,61 +140,79 @@ export function createRouter(): Router {
       return;
     }
 
-    const site = store.getSite(req.params.site_id);
-    if (!site || site.status !== "connected") {
-      res.status(404).json({
-        error: {
-          code: "site_not_found",
-          message: "Site could not be found.",
-        },
-      });
-      return;
-    }
-
-    const upstreamUrl = new URL("/wp-json/acfw/v1/site-summary", site.url);
-    if (query.data.start_date && query.data.end_date) {
-      upstreamUrl.searchParams.set("start_date", query.data.start_date);
-      upstreamUrl.searchParams.set("end_date", query.data.end_date);
-    } else {
-      upstreamUrl.searchParams.set("period", query.data.period);
-    }
-    upstreamUrl.searchParams.set("compare", query.data.compare);
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15_000);
-
-    try {
-      const upstream = await fetch(upstreamUrl, {
-        headers: {
-          Authorization: `Bearer ${site.bridge_token}`,
-          Accept: "application/json",
-        },
-        signal: controller.signal,
-      });
-      const text = await upstream.text();
-      const body = text ? JSON.parse(text) : {};
-
-      res.status(upstream.status).json({
-        bridge_site: {
-          site_id: site.site_id,
-          name: site.name,
-          url: site.url,
-        },
-        upstream: body,
-      });
-    } catch (error) {
-      res.status(502).json({
-        error: {
-          code: "wordpress_upstream_error",
-          message: error instanceof Error ? error.message : "WordPress site could not be reached.",
-        },
-      });
-    } finally {
-      clearTimeout(timeout);
-    }
+    await proxyWordPressEndpoint(req.params.site_id, "site-summary", query.data, res);
   });
 
+  const analyticsEndpoints = [
+    "top-content",
+    "content-performance",
+    "content-opportunities",
+    "referrers",
+    "campaigns",
+    "forms",
+    "user-journey",
+  ];
+
+  for (const endpoint of analyticsEndpoints) {
+    router.get(`/api/v1/sites/:site_id/${endpoint}`, async (req, res) => {
+      await proxyWordPressEndpoint(req.params.site_id, endpoint, req.query, res);
+    });
+  }
+
   return router;
+}
+
+async function proxyWordPressEndpoint(siteId: string, endpoint: string, query: Record<string, unknown>, res: express.Response): Promise<void> {
+  const site = store.getSite(siteId);
+  if (!site || site.status !== "connected") {
+    res.status(404).json({
+      error: {
+        code: "site_not_found",
+        message: "Site could not be found.",
+      },
+    });
+    return;
+  }
+
+  const upstreamUrl = new URL(`/wp-json/acfw/v1/${endpoint}`, site.url);
+  for (const [key, value] of Object.entries(query)) {
+    if (typeof value === "string" && value !== "") {
+      upstreamUrl.searchParams.set(key, value);
+    }
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 15_000);
+
+  try {
+    const upstream = await fetch(upstreamUrl, {
+      headers: {
+        Authorization: `Bearer ${site.bridge_token}`,
+        Accept: "application/json",
+      },
+      signal: controller.signal,
+    });
+    const text = await upstream.text();
+    const body = text ? JSON.parse(text) : {};
+
+    res.status(upstream.status).json({
+      bridge_site: {
+        site_id: site.site_id,
+        name: site.name,
+        url: site.url,
+      },
+      upstream: body,
+    });
+  } catch (error) {
+    res.status(502).json({
+      error: {
+        code: "wordpress_upstream_error",
+        message: error instanceof Error ? error.message : "WordPress site could not be reached.",
+      },
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 function validationError(error: z.ZodError): { error: { code: string; message: string; details: unknown } } {
