@@ -38,6 +38,13 @@ Set `BRIDGE_API_KEY` in `.env`. GPT Actions should send:
 Authorization: Bearer {BRIDGE_API_KEY}
 ```
 
+## Docker
+
+```bash
+docker build -t analytics-chat-bridge ./bridge
+docker run --rm -p 8787:8787 --env-file ./bridge/.env analytics-chat-bridge
+```
+
 ## Endpoints
 
 ```text
