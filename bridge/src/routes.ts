@@ -133,7 +133,7 @@ export function createRouter(): Router {
     });
   });
 
-  router.get("/api/v1/sites/:site_id/site-summary", (req, res) => {
+  router.get("/api/v1/sites/:site_id/site-summary", async (req, res) => {
     const query = periodQuerySchema.safeParse(req.query);
     if (!query.success) {
       res.status(400).json(validationError(query.error));
@@ -151,32 +151,47 @@ export function createRouter(): Router {
       return;
     }
 
-    // This is a bridge contract stub. The next step is to call the WordPress plugin
-    // at `${site.url}/wp-json/acfw/v1/site-summary` with the site's bridge token.
-    res.json({
-      site: {
-        site_id: site.site_id,
-        name: site.name,
-        url: site.url,
-      },
-      period: {
-        requested_period: query.data.period,
-        start: query.data.start_date ?? null,
-        end: query.data.end_date ?? null,
-        compare: query.data.compare,
-      },
-      metrics: {
-        views: 0,
-        visitors: 0,
-        sessions: 0,
-        bounce_rate: 0,
-        average_session_duration: 0,
-        conversion_count: 0,
-        conversion_rate: 0,
-      },
-      available: false,
-      reason: "WordPress proxying is not implemented yet. The bridge skeleton is ready for the site-side connection flow.",
-    });
+    const upstreamUrl = new URL("/wp-json/acfw/v1/site-summary", site.url);
+    if (query.data.start_date && query.data.end_date) {
+      upstreamUrl.searchParams.set("start_date", query.data.start_date);
+      upstreamUrl.searchParams.set("end_date", query.data.end_date);
+    } else {
+      upstreamUrl.searchParams.set("period", query.data.period);
+    }
+    upstreamUrl.searchParams.set("compare", query.data.compare);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15_000);
+
+    try {
+      const upstream = await fetch(upstreamUrl, {
+        headers: {
+          Authorization: `Bearer ${site.bridge_token}`,
+          Accept: "application/json",
+        },
+        signal: controller.signal,
+      });
+      const text = await upstream.text();
+      const body = text ? JSON.parse(text) : {};
+
+      res.status(upstream.status).json({
+        bridge_site: {
+          site_id: site.site_id,
+          name: site.name,
+          url: site.url,
+        },
+        upstream: body,
+      });
+    } catch (error) {
+      res.status(502).json({
+        error: {
+          code: "wordpress_upstream_error",
+          message: error instanceof Error ? error.message : "WordPress site could not be reached.",
+        },
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
   });
 
   return router;
