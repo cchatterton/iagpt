@@ -36,25 +36,14 @@ final class ACFW_REST {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, $method ),
-					'permission_callback' => '__return_true',
+					'permission_callback' => array( $this, 'permission_callback' ),
 				)
 			);
 		}
 	}
 
-	public function authenticate_pre_dispatch( mixed $result, WP_REST_Server $server, WP_REST_Request $request ): mixed {
-		unset( $server );
-
-		if ( null !== $result || ! str_starts_with( $request->get_route(), '/' . self::NAMESPACE . '/' ) ) {
-			return $result;
-		}
-
-		$auth = $this->auth->authenticate_request( $request );
-		if ( is_wp_error( $auth ) ) {
-			return $this->wp_error_response( $auth );
-		}
-
-		return null;
+	public function permission_callback( WP_REST_Request $request ): bool|WP_Error {
+		return $this->auth->authenticate_request( $request );
 	}
 
 	public function site_summary( WP_REST_Request $request ): WP_REST_Response {
