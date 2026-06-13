@@ -92,7 +92,7 @@ final class ACFW_Settings {
 		$key = $this->auth->generate_key();
 		set_transient( 'acfw_generated_key_' . get_current_user_id(), $key, 5 * MINUTE_IN_SECONDS );
 
-		wp_safe_redirect( add_query_arg( 'acfw_key_generated', '1', menu_page_url( 'analytics-chat-for-wordpress', false ) ) );
+		wp_safe_redirect( add_query_arg( 'acfw_key_generated', '1', $this->settings_page_url() ) );
 		exit;
 	}
 
@@ -104,7 +104,7 @@ final class ACFW_Settings {
 		check_admin_referer( 'acfw_revoke_key' );
 		$this->auth->revoke_key();
 
-		wp_safe_redirect( add_query_arg( 'acfw_key_revoked', '1', menu_page_url( 'analytics-chat-for-wordpress', false ) ) );
+		wp_safe_redirect( add_query_arg( 'acfw_key_revoked', '1', $this->settings_page_url() ) );
 		exit;
 	}
 
@@ -134,14 +134,14 @@ final class ACFW_Settings {
 				),
 				'body'    => wp_json_encode(
 					array(
-						'connection_code'               => $connection_code,
-						'site_name'                     => get_bloginfo( 'name' ),
-						'site_url'                      => home_url(),
-						'wordpress_version'             => get_bloginfo( 'version' ),
-						'php_version'                   => PHP_VERSION,
-						'plugin_version'                => ACFW_VERSION,
-						'independent_analytics_active'  => $this->analytics->is_available(),
-						'independent_analytics_version' => $this->analytics->get_version(),
+						'connection_code'                 => $connection_code,
+						'site_name'                       => get_bloginfo( 'name' ),
+						'site_url'                        => home_url(),
+						'wordpress_version'               => get_bloginfo( 'version' ),
+						'php_version'                     => PHP_VERSION,
+						'plugin_version'                  => ACFW_VERSION,
+						'independent_analytics_active'    => $this->analytics->is_available(),
+						'independent_analytics_version'   => $this->analytics->get_version(),
 					)
 				),
 			)
@@ -226,7 +226,11 @@ final class ACFW_Settings {
 	}
 
 	private function redirect_to_settings(): void {
-		wp_safe_redirect( menu_page_url( 'analytics-chat-for-wordpress', false ) );
+		wp_safe_redirect( $this->settings_page_url() );
 		exit;
+	}
+
+	private function settings_page_url(): string {
+		return admin_url( 'options-general.php?page=analytics-chat-for-wordpress' );
 	}
 }
