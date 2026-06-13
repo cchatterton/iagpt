@@ -15,10 +15,14 @@ final class ACFW_Updater {
 	private const SLUG = 'analytics-chat-for-wordpress';
 	private const ASSET_NAME = 'analytics-chat-for-wordpress.zip';
 	private const RELEASE_TRANSIENT = 'acfw_github_latest_release';
+	private const PLUGINS_SCREEN_CHECK_TRANSIENT = 'acfw_plugins_screen_update_check';
 
 	public function init(): void {
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'filter_update_plugins' ) );
 		add_filter( 'plugins_api', array( $this, 'filter_plugin_info' ), 10, 3 );
+		add_filter( 'plugin_action_links_' . plugin_basename( ACFW_PLUGIN_FILE ), array( $this, 'plugin_action_links' ) );
+		add_action( 'admin_init', array( $this, 'maybe_check_on_plugins_screen' ) );
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 		add_action( 'admin_post_acfw_check_updates', array( $this, 'handle_manual_check' ) );
 	}
 
@@ -75,6 +79,50 @@ final class ACFW_Updater {
 		);
 	}
 
+	public function plugin_action_links( array $links ): array {
+		if ( ! current_user_can( 'update_plugins' ) ) {
+			return $links;
+		}
+
+		$url = wp_nonce_url(
+			add_query_arg(
+				array(
+					'action'   => 'acfw_check_updates',
+					'redirect' => 'plugins',
+				),
+				admin_url( 'admin-post.php' )
+			),
+			'acfw_check_updates'
+		);
+
+		$links[] = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Check GitHub updates', 'analytics-chat-for-wordpress' ) . '</a>';
+
+		return $links;
+	}
+
+	public function maybe_check_on_plugins_screen(): void {
+		global $pagenow;
+
+		if ( 'plugins.php' !== $pagenow || ! current_user_can( 'update_plugins' ) ) {
+			return;
+		}
+
+		if ( get_site_transient( self::PLUGINS_SCREEN_CHECK_TRANSIENT ) ) {
+			return;
+		}
+
+		$this->refresh_wordpress_updates();
+		set_site_transient( self::PLUGINS_SCREEN_CHECK_TRANSIENT, 1, 15 * MINUTE_IN_SECONDS );
+	}
+
+	public function admin_notices(): void {
+		if ( ! is_admin() || ! current_user_can( 'update_plugins' ) || ! isset( $_GET['acfw_update_check'] ) ) {
+			return;
+		}
+
+		echo '<div class="notice notice-info is-dismissible"><p>' . esc_html__( 'Analytics Chat checked GitHub for plugin updates.', 'analytics-chat-for-wordpress' ) . '</p></div>';
+	}
+
 	public function handle_manual_check(): void {
 		if ( ! current_user_can( 'update_plugins' ) ) {
 			wp_die( esc_html__( 'You do not have permission to check for plugin updates.', 'analytics-chat-for-wordpress' ) );
@@ -82,16 +130,14 @@ final class ACFW_Updater {
 
 		check_admin_referer( 'acfw_check_updates' );
 
-		$this->clear_cache();
-		delete_site_transient( 'update_plugins' );
+		$this->refresh_wordpress_updates();
 
-		if ( ! function_exists( 'wp_update_plugins' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/update.php';
-		}
+		$redirect = sanitize_key( (string) ( $_GET['redirect'] ?? '' ) );
+		$target   = 'plugins' === $redirect
+			? admin_url( 'plugins.php' )
+			: admin_url( 'options-general.php?page=analytics-chat-for-wordpress' );
 
-		wp_update_plugins();
-
-		wp_safe_redirect( add_query_arg( 'acfw_update_check', '1', admin_url( 'options-general.php?page=analytics-chat-for-wordpress' ) ) );
+		wp_safe_redirect( add_query_arg( 'acfw_update_check', '1', $target ) );
 		exit;
 	}
 
@@ -205,6 +251,18 @@ final class ACFW_Updater {
 
 	private function clear_cache(): void {
 		delete_site_transient( self::RELEASE_TRANSIENT );
+		delete_site_transient( self::PLUGINS_SCREEN_CHECK_TRANSIENT );
+	}
+
+	private function refresh_wordpress_updates(): void {
+		$this->clear_cache();
+		delete_site_transient( 'update_plugins' );
+
+		if ( ! function_exists( 'wp_update_plugins' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/update.php';
+		}
+
+		wp_update_plugins();
 	}
 
 	private function cache_failed_lookup(): void {
