@@ -16,6 +16,41 @@ export function createRouter(): Router {
     });
   });
 
+  router.post("/api/v1/internal/connections/complete", (req, res) => {
+    const parsed = siteRegistrationSchema.safeParse(req.body);
+    if (!parsed.success) {
+      res.status(400).json(validationError(parsed.error));
+      return;
+    }
+
+    if (!parsed.data.connection_code) {
+      res.status(400).json({
+        error: {
+          code: "invalid_request",
+          message: "connection_code is required.",
+        },
+      });
+      return;
+    }
+
+    const result = store.completeConnectionByCode(parsed.data.connection_code, parsed.data);
+    if (!result) {
+      res.status(404).json({
+        error: {
+          code: "connection_not_found_or_unavailable",
+          message: "Connection could not be completed.",
+        },
+      });
+      return;
+    }
+
+    res.status(201).json({
+      site_id: result.site.site_id,
+      bridge_token: result.site.bridge_token,
+      status: "connected",
+    });
+  });
+
   router.use("/api/v1", requireBridgeAuth);
 
   router.get("/api/v1/sites", (_req, res) => {
@@ -75,7 +110,7 @@ export function createRouter(): Router {
 
     res.status(201).json({
       site_id: result.site.site_id,
-      bridge_token: result.site.bridge_token_preview,
+      bridge_token: result.site.bridge_token,
       status: "connected",
     });
   });
