@@ -19,7 +19,7 @@ This is a functional skeleton for testing the GPT conversation flow:
 - start a new site connection
 - check connection status
 - simulate completing a WordPress connection
-- proxy site summary requests to the connected WordPress plugin
+- proxy analytics requests to the connected WordPress plugin
 
 The current store is in-memory and resets when the process restarts. Replace it with Postgres/Supabase before production.
 
@@ -49,6 +49,13 @@ POST /api/v1/internal/connections/complete
 POST /api/v1/internal/connections/:connection_id/complete
 DELETE /api/v1/sites/:site_id
 GET  /api/v1/sites/:site_id/site-summary
+GET  /api/v1/sites/:site_id/top-content
+GET  /api/v1/sites/:site_id/content-performance
+GET  /api/v1/sites/:site_id/content-opportunities
+GET  /api/v1/sites/:site_id/referrers
+GET  /api/v1/sites/:site_id/campaigns
+GET  /api/v1/sites/:site_id/forms
+GET  /api/v1/sites/:site_id/user-journey
 ```
 
 `POST /api/v1/internal/connections/complete` is the temporary WordPress plugin callback. It accepts the one-time `connection_code` returned by `POST /sites/connect/start`.
@@ -61,5 +68,4 @@ GET  /api/v1/sites/:site_id/site-summary
 - Add user auth/OAuth for public GPT users.
 - Encrypt per-site WordPress tokens.
 - Add WordPress plugin connection UI.
-- Proxy the remaining analytics endpoints.
-- Add a bridge OpenAPI schema for GPT Builder.
+- Add production-grade response schemas to the bridge OpenAPI file.
