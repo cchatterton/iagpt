@@ -1,0 +1,88 @@
+openapi: 3.1.0
+info:
+  title: Analytics Chat Bridge
+  version: 0.1.0
+  description: Hosted bridge API for a public Analytics Chat for WordPress GPT.
+servers:
+  - url: https://app.analyticschat.example/api/v1
+security:
+  - bearerAuth: []
+paths:
+  /sites:
+    get:
+      operationId: listWebsites
+      summary: List connected WordPress websites.
+      responses:
+        "200":
+          description: Connected websites.
+  /sites/connect/start:
+    post:
+      operationId: startSiteConnection
+      summary: Start connecting a new WordPress website.
+      responses:
+        "201":
+          description: Connection details for the user to complete in WordPress.
+  /sites/connect/{connection_id}/status:
+    get:
+      operationId: getSiteConnectionStatus
+      summary: Check whether a site connection has completed.
+      parameters:
+        - name: connection_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Site connection status.
+  /sites/{site_id}:
+    delete:
+      operationId: disconnectWebsite
+      summary: Disconnect a WordPress website.
+      parameters:
+        - name: site_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Site disconnected.
+  /sites/{site_id}/site-summary:
+    get:
+      operationId: getSiteSummary
+      summary: Get overall website analytics summary for a connected site.
+      parameters:
+        - name: site_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: period
+          in: query
+          schema:
+            type: string
+            example: 30d
+        - name: start_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: end_date
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: compare
+          in: query
+          schema:
+            type: string
+            enum: [previous_period, none]
+      responses:
+        "200":
+          description: Site summary metrics.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
