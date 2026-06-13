@@ -2,6 +2,11 @@
 
 All notable changes to Analytics Chat for WordPress are recorded here.
 
+## 0.1.7 - 2026-06-13
+
+- Accepted GPT-style period values such as `last_30_days` as aliases for `30d`.
+- Clarified invalid period errors to mention both supported period formats.
+
 ## 0.1.6 - 2026-06-13
 
 - Flattened OpenAPI query parameters for GPT Builder compatibility.

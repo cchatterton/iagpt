@@ -192,9 +192,9 @@ final class ACFW_REST {
 			return array( 'start_date' => $start, 'end_date' => $end, 'days' => $days );
 		}
 
-		$period = sanitize_text_field( (string) $request->get_param( 'period' ) ?: '30d' );
+		$period = $this->normalize_period( sanitize_text_field( (string) $request->get_param( 'period' ) ?: '30d' ) );
 		if ( ! preg_match( '/^(\d+)d$/', $period, $matches ) ) {
-			return new WP_Error( 'invalid_period', __( 'Period must use a value like 30d.', 'analytics-chat-for-wordpress' ), array( 'status' => 400 ) );
+			return new WP_Error( 'invalid_period', __( 'Period must use a value like 30d or last_30_days.', 'analytics-chat-for-wordpress' ), array( 'status' => 400 ) );
 		}
 
 		$days = absint( $matches[1] );
@@ -214,6 +214,14 @@ final class ACFW_REST {
 
 	private function valid_date( string $date ): bool {
 		return 1 === preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) && false !== strtotime( $date );
+	}
+
+	private function normalize_period( string $period ): string {
+		if ( preg_match( '/^last_(\d+)_days$/', $period, $matches ) ) {
+			return absint( $matches[1] ) . 'd';
+		}
+
+		return $period;
 	}
 
 	private function compare_arg( WP_REST_Request $request ): string {
