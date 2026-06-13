@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Analytics Chat for WordPress
  * Description: Read-only GPT bridge for WordPress content analytics using Independent Analytics data.
- * Version: 0.1.2
+ * Version: 0.1.3
  * Requires at least: 6.0
  * Requires PHP: 8.1
  * Author: AlphaSys
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'ACFW_VERSION', '0.1.2' );
+define( 'ACFW_VERSION', '0.1.3' );
 define( 'ACFW_PLUGIN_FILE', __FILE__ );
 define( 'ACFW_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ACFW_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
