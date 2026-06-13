@@ -3,7 +3,7 @@
 Read-only WordPress plugin that lets a Custom GPT query Independent Analytics data through authenticated REST API endpoints.
 
 Author: AlphaSys  
-Version: 0.1.2  
+Version: 0.1.3  
 Status: MVP  
 
 ## Purpose
