@@ -2,6 +2,11 @@
 
 All notable changes to Analytics Chat for WordPress are recorded here.
 
+## 0.1.6 - 2026-06-13
+
+- Flattened OpenAPI query parameters for GPT Builder compatibility.
+- Added an explicit empty `components.schemas` object to avoid schema import warnings.
+
 ## 0.1.5 - 2026-06-13
 
 - Changed plugin author branding to Techn.

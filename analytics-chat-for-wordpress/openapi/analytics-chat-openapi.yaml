@@ -13,7 +13,11 @@ paths:
       operationId: getSiteSummary
       summary: Get overall website analytics summary.
       parameters:
-        - $ref: "#/components/parameters/Period"
+        - name: period
+          in: query
+          schema:
+            type: string
+            example: 30d
         - name: start_date
           in: query
           schema:
@@ -37,13 +41,23 @@ paths:
       operationId: getTopContent
       summary: Get top performing WordPress content.
       parameters:
-        - $ref: "#/components/parameters/Period"
+        - name: period
+          in: query
+          schema:
+            type: string
+            example: 30d
         - name: post_type
           in: query
           schema:
             type: string
             example: any
-        - $ref: "#/components/parameters/Limit"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 20
         - name: order_by
           in: query
           schema:
@@ -65,7 +79,11 @@ paths:
           in: query
           schema:
             type: string
-        - $ref: "#/components/parameters/Period"
+        - name: period
+          in: query
+          schema:
+            type: string
+            example: 30d
         - name: compare
           in: query
           schema:
@@ -79,8 +97,18 @@ paths:
       operationId: getContentOpportunities
       summary: Find content opportunities and risks.
       parameters:
-        - $ref: "#/components/parameters/Period"
-        - $ref: "#/components/parameters/Limit"
+        - name: period
+          in: query
+          schema:
+            type: string
+            example: 30d
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 20
         - name: opportunity_type
           in: query
           schema:
@@ -94,12 +122,22 @@ paths:
       operationId: getReferrers
       summary: Get referrer and traffic source performance.
       parameters:
-        - $ref: "#/components/parameters/Period"
+        - name: period
+          in: query
+          schema:
+            type: string
+            example: 30d
         - name: post_id
           in: query
           schema:
             type: integer
-        - $ref: "#/components/parameters/Limit"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 20
       responses:
         "200":
           description: Referrer data.
@@ -108,7 +146,11 @@ paths:
       operationId: getCampaigns
       summary: Get campaign performance where available.
       parameters:
-        - $ref: "#/components/parameters/Period"
+        - name: period
+          in: query
+          schema:
+            type: string
+            example: 30d
         - name: campaign
           in: query
           schema:
@@ -121,7 +163,13 @@ paths:
           in: query
           schema:
             type: string
-        - $ref: "#/components/parameters/Limit"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 20
       responses:
         "200":
           description: Campaign performance.
@@ -130,12 +178,22 @@ paths:
       operationId: getForms
       summary: Get form conversion performance where available.
       parameters:
-        - $ref: "#/components/parameters/Period"
+        - name: period
+          in: query
+          schema:
+            type: string
+            example: 30d
         - name: form_id
           in: query
           schema:
             type: string
-        - $ref: "#/components/parameters/Limit"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 20
       responses:
         "200":
           description: Form conversion data.
@@ -144,31 +202,27 @@ paths:
       operationId: getUserJourney
       summary: Get anonymised user journey patterns where available.
       parameters:
-        - $ref: "#/components/parameters/Period"
+        - name: period
+          in: query
+          schema:
+            type: string
+            example: 30d
         - name: post_id
           in: query
           schema:
             type: integer
-        - $ref: "#/components/parameters/Limit"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            example: 10
       responses:
         "200":
           description: Aggregated journey patterns.
 components:
-  parameters:
-    Period:
-      name: period
-      in: query
-      schema:
-        type: string
-        example: 30d
-    Limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        example: 20
+  schemas: {}
   securitySchemes:
     bearerAuth:
       type: http

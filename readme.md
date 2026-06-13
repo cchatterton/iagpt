@@ -4,7 +4,7 @@ Analytics Chat for WordPress is a read-only WordPress plugin that lets a Custom 
 
 Author: Techn  
 Author URL: https://techn.com.au  
-Version: 0.1.5  
+Version: 0.1.6  
 Status: MVP  
 
 The MVP does not require external infrastructure. Each site owner installs the plugin on their own WordPress site, generates an API key, and configures a Custom GPT Action that calls that site directly.
@@ -132,7 +132,7 @@ Every plugin change must include:
 - a version bump in `analytics-chat-for-wordpress/analytics-chat-for-wordpress.php`
 - a matching `ACFW_VERSION` bump
 - release notes in `CHANGELOG.md`
-- a GitHub Release tag matching the version, such as `v0.1.5`
+- a GitHub Release tag matching the version, such as `v0.1.6`
 - plugin row metadata should keep the Techn author link and GitHub link visible in WordPress
 - an attached `analytics-chat-for-wordpress.zip` release asset
 
@@ -155,7 +155,7 @@ analytics-chat-for-wordpress/
   openapi/
 ```
 
-4. Create a GitHub Release using a tag such as `v0.1.5`.
+4. Create a GitHub Release using a tag such as `v0.1.6`.
 5. Attach `analytics-chat-for-wordpress.zip` to the release.
 
 WordPress checks the latest GitHub release and only offers an update when the release tag is newer than the installed plugin version and the release includes the ZIP asset.
