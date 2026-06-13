@@ -2,6 +2,13 @@
 
 All notable changes to Analytics Chat for WordPress are recorded here.
 
+## 0.1.3 - 2026-06-13
+
+- Added a Plugins page action link to manually check GitHub for updates.
+- Added a throttled update check when the WordPress Plugins page loads.
+- Added an admin notice after manual GitHub update checks.
+- Kept version and release notes in sync with the WordPress Plugin Build Standard.
+
 ## 0.1.2 - 2026-06-13
 
 - Applied the WordPress Plugin Build Standard where it fits the existing plugin specification.
