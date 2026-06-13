@@ -20,8 +20,7 @@ final class ACFW_Settings {
 
 	public function __construct(
 		private readonly ACFW_Auth $auth,
-		private readonly ACFW_Independent_Analytics $analytics,
-		private readonly ACFW_Updater $updater
+		private readonly ACFW_Independent_Analytics $analytics
 	) {}
 
 	public function register_admin_page(): void {
@@ -211,7 +210,6 @@ final class ACFW_Settings {
 		$bridge_site_id      = (string) get_option( self::OPTION_BRIDGE_SITE_ID, '' );
 		$bridge_status       = (string) get_option( self::OPTION_BRIDGE_STATUS, '' );
 		$bridge_connected_at = (string) get_option( self::OPTION_BRIDGE_CONNECTED_AT, '' );
-		$update_status       = $this->updater->update_status();
 
 		require ACFW_PLUGIN_DIR . 'admin/settings-page.php';
 	}

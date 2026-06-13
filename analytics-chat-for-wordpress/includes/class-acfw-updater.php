@@ -21,6 +21,7 @@ final class ACFW_Updater {
 		add_filter( 'pre_set_site_transient_update_plugins', array( $this, 'filter_update_plugins' ) );
 		add_filter( 'plugins_api', array( $this, 'filter_plugin_info' ), 10, 3 );
 		add_filter( 'plugin_action_links_' . plugin_basename( ACFW_PLUGIN_FILE ), array( $this, 'plugin_action_links' ) );
+		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 2 );
 		add_action( 'admin_init', array( $this, 'maybe_check_on_plugins_screen' ) );
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 		add_action( 'admin_post_acfw_check_updates', array( $this, 'handle_manual_check' ) );
@@ -96,6 +97,16 @@ final class ACFW_Updater {
 		);
 
 		$links[] = '<a href="' . esc_url( $url ) . '">' . esc_html__( 'Check GitHub updates', 'analytics-chat-for-wordpress' ) . '</a>';
+
+		return $links;
+	}
+
+	public function plugin_row_meta( array $links, string $file ): array {
+		if ( plugin_basename( ACFW_PLUGIN_FILE ) !== $file ) {
+			return $links;
+		}
+
+		$links[] = '<a href="' . esc_url( $this->github_url() ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'GitHub', 'analytics-chat-for-wordpress' ) . '</a>';
 
 		return $links;
 	}

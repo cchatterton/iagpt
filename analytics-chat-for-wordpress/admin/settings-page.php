@@ -11,7 +11,6 @@
  * @var string $bridge_site_id
  * @var string $bridge_status
  * @var string $bridge_connected_at
- * @var array $update_status
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -30,10 +29,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 	<?php if ( isset( $_GET['acfw_key_revoked'] ) ) : ?>
 		<div class="notice notice-success"><p><?php echo esc_html__( 'API key revoked.', 'analytics-chat-for-wordpress' ); ?></p></div>
-	<?php endif; ?>
-
-	<?php if ( isset( $_GET['acfw_update_check'] ) ) : ?>
-		<div class="notice notice-info"><p><?php echo esc_html__( 'GitHub update check completed.', 'analytics-chat-for-wordpress' ); ?></p></div>
 	<?php endif; ?>
 
 	<?php if ( ! empty( $this->admin_notice['message'] ) ) : ?>
@@ -119,41 +114,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php endif; ?>
 
 	<h2><?php echo esc_html__( 'API Key', 'analytics-chat-for-wordpress' ); ?></h2>
-	<p><?php echo esc_html__( 'Use this key as a Bearer token in your GPT Action. The full key is shown only once after generation.', 'analytics-chat-for-wordpress' ); ?></p>
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline-block; margin-right: 8px;">
-		<input type="hidden" name="action" value="acfw_generate_key">
-		<?php wp_nonce_field( 'acfw_generate_key' ); ?>
-		<?php submit_button( __( 'Generate new API key', 'analytics-chat-for-wordpress' ), 'primary', 'submit', false ); ?>
-	</form>
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="display:inline-block;">
-		<input type="hidden" name="action" value="acfw_revoke_key">
-		<?php wp_nonce_field( 'acfw_revoke_key' ); ?>
-		<?php submit_button( __( 'Revoke API key', 'analytics-chat-for-wordpress' ), 'delete', 'submit', false ); ?>
-	</form>
-
-	<h2><?php echo esc_html__( 'Updates', 'analytics-chat-for-wordpress' ); ?></h2>
+	<p><?php echo esc_html__( 'Use this key as a Bearer token in your GPT Action. The full key is shown only once immediately after generation.', 'analytics-chat-for-wordpress' ); ?></p>
 	<table class="widefat striped" style="max-width: 900px; margin-bottom: 16px;">
 		<tbody>
 			<tr>
-				<th scope="row"><?php echo esc_html__( 'Installed version', 'analytics-chat-for-wordpress' ); ?></th>
-				<td><code><?php echo esc_html( ACFW_VERSION ); ?></code></td>
-			</tr>
-			<tr>
-				<th scope="row"><?php echo esc_html__( 'GitHub release status', 'analytics-chat-for-wordpress' ); ?></th>
-				<td>
-					<?php echo esc_html( (string) ( $update_status['message'] ?? __( 'Unknown.', 'analytics-chat-for-wordpress' ) ) ); ?>
-					<?php if ( ! empty( $update_status['url'] ) ) : ?>
-						<a href="<?php echo esc_url( (string) $update_status['url'] ); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html__( 'View release', 'analytics-chat-for-wordpress' ); ?></a>
-					<?php endif; ?>
-				</td>
+				<th scope="row"><?php echo esc_html__( 'Token status', 'analytics-chat-for-wordpress' ); ?></th>
+				<td><?php echo $auth->has_key() ? esc_html__( 'One API key is configured.', 'analytics-chat-for-wordpress' ) : esc_html__( 'No API key is configured.', 'analytics-chat-for-wordpress' ); ?></td>
 			</tr>
 		</tbody>
 	</table>
-	<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-		<input type="hidden" name="action" value="acfw_check_updates">
-		<?php wp_nonce_field( 'acfw_check_updates' ); ?>
-		<?php submit_button( __( 'Check GitHub for updates', 'analytics-chat-for-wordpress' ), 'secondary', 'submit', false ); ?>
-	</form>
+	<?php if ( $auth->has_key() ) : ?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="acfw_revoke_key">
+			<?php wp_nonce_field( 'acfw_revoke_key' ); ?>
+			<?php submit_button( __( 'Revoke API key', 'analytics-chat-for-wordpress' ), 'delete', 'submit', false ); ?>
+		</form>
+	<?php else : ?>
+		<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<input type="hidden" name="action" value="acfw_generate_key">
+			<?php wp_nonce_field( 'acfw_generate_key' ); ?>
+			<?php submit_button( __( 'Generate API key', 'analytics-chat-for-wordpress' ), 'primary', 'submit', false ); ?>
+		</form>
+	<?php endif; ?>
 
 	<h2><?php echo esc_html__( 'Access Limits', 'analytics-chat-for-wordpress' ); ?></h2>
 	<form method="post" action="options.php">

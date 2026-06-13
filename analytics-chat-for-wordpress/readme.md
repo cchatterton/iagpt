@@ -3,7 +3,7 @@
 Read-only WordPress plugin that lets a Custom GPT query Independent Analytics data through authenticated REST API endpoints.
 
 Author: AlphaSys  
-Version: 0.1.3  
+Version: 0.1.4  
 Status: MVP  
 
 ## Purpose
@@ -54,7 +54,7 @@ The original plugin specification called for the `includes/` class-based structu
 10. Configure API key auth as a Bearer token.
 11. Test with: "Give me a site summary for the last 30 days."
 
-## REST Endpoints
+## REST endpoints
 
 All endpoints are under:
 
@@ -79,7 +79,7 @@ Endpoints:
 - `GET /forms`
 - `GET /user-journey`
 
-## GPT Instructions
+## GPT instructions
 
 Use these instructions for the Custom GPT:
 
@@ -114,7 +114,7 @@ When the user asks about:
 If the user asks for advice, use the analytics data first, then explain the recommendation.
 ```
 
-## Privacy And Security
+## Privacy and security
 
 - The plugin is read-only.
 - API keys are stored hashed.
@@ -124,7 +124,7 @@ If the user asks for advice, use the analytics data first, then explain the reco
 - Raw IP addresses, visitor fingerprints, visitor-level browsing history, and WordPress user identities are not exposed.
 - Requests are capped by date range and result count.
 
-## Notes On Independent Analytics Data
+## Notes on Independent Analytics data
 
 Independent Analytics internals can vary by version. This plugin keeps all IA-specific table detection and query logic inside `ACFW_Independent_Analytics`.
 
@@ -133,6 +133,8 @@ If a compatible aggregate table cannot be detected, the plugin returns a structu
 ## Important Notes
 
 - Author is declared as AlphaSys.
+- Author URL is https://alphasys.com.au.
+- Plugin URL is https://github.com/cchatterton/iagpt.
 - Prefix is `acfw`.
 - REST namespace is `acfw/v1`.
 - All REST routes use named permission callbacks.

@@ -2,6 +2,13 @@
 
 All notable changes to Analytics Chat for WordPress are recorded here.
 
+## 0.1.4 - 2026-06-13
+
+- Simplified API key management so admins see either generate or revoke, never both.
+- Removed GitHub update checking from the Analytics Chat settings page.
+- Added plugin header links for AlphaSys and the GitHub repository.
+- Added a GitHub link to the WordPress Plugins page row metadata.
+
 ## 0.1.3 - 2026-06-13
 
 - Added a Plugins page action link to manually check GitHub for updates.
