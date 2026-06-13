@@ -1,6 +1,16 @@
 # Analytics Chat Bridge
 
-Hosted bridge API for the public/multi-site Analytics Chat GPT.
+Experimental hosted bridge API for a future public/multi-site Analytics Chat GPT.
+
+This bridge is not required for the current no-infrastructure MVP. The current release path is direct-site setup:
+
+```text
+Custom GPT
+  -> user's production WordPress site
+  -> Analytics Chat for WordPress plugin
+```
+
+Use this bridge only if the product moves toward one centrally hosted public GPT where each ChatGPT user connects and switches between multiple WordPress sites.
 
 This service sits between ChatGPT and connected WordPress sites:
 
