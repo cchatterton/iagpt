@@ -117,3 +117,31 @@ For public use in ChatGPT without extra infrastructure, distribute this as:
 5. A privacy policy URL for the GPT Action.
 
 The future hosted bridge architecture is documented in `docs/public-gpt-bridge-architecture.md`, but it is not required for the current no-infrastructure release.
+
+## GitHub Updates
+
+The plugin includes a GitHub release updater from version `0.1.1` onward.
+
+To publish an update that WordPress can install:
+
+1. Bump the plugin version in `analytics-chat-for-wordpress.php`.
+2. Build a ZIP named `analytics-chat-for-wordpress.zip`:
+
+```bash
+bash scripts/build-plugin-zip.sh
+```
+
+3. The ZIP must contain the plugin folder as its top-level directory:
+
+```text
+analytics-chat-for-wordpress/
+  analytics-chat-for-wordpress.php
+  includes/
+  admin/
+  openapi/
+```
+
+4. Create a GitHub Release using a tag such as `v0.1.2`.
+5. Attach `analytics-chat-for-wordpress.zip` to the release.
+
+WordPress checks the latest GitHub release and only offers an update when the release tag is newer than the installed plugin version and the release includes the ZIP asset.
