@@ -1,20 +1,19 @@
 # Analytics Chat for WordPress
 
-Read-only WordPress plugin that lets a Custom GPT query Independent Analytics data through authenticated REST API endpoints.
+Public read-only WordPress plugin that lets a Custom GPT query aggregated Independent Analytics data through REST API endpoints.
 
 Author: Techn  
-Version: 0.1.7  
+Version: 0.1.8  
 Status: MVP  
 
 ## Purpose
 
-Analytics Chat for WordPress exposes aggregated Independent Analytics data through authenticated, read-only REST endpoints so a Custom GPT can interpret WordPress content performance in plain English.
+Analytics Chat for WordPress exposes aggregated Independent Analytics data through public, read-only REST endpoints so a Custom GPT can interpret WordPress content performance in plain English.
 
 ## Key Features
 
-- Authenticated REST endpoints for GPT Actions.
+- Public REST endpoints for GPT Actions.
 - Site summary, top content, content performance, content opportunities, referrers, campaigns, forms, and anonymised journey endpoints.
-- API key generation, rotation, and revocation.
 - Independent Analytics diagnostics.
 - GitHub release update checks from version `0.1.1` onward.
 - Aggregated analytics responses only; no raw visitor identifiers.
@@ -44,15 +43,14 @@ The original plugin specification called for the `includes/` class-based structu
 
 1. Install and activate Independent Analytics.
 2. Install and activate this bridge plugin.
-3. Go to Settings -> Analytics Chat.
-4. Generate an API key and copy it immediately.
-5. Open `openapi/analytics-chat-openapi.yaml`.
-6. Replace `https://example.com` with your site URL.
-7. Create a Custom GPT.
-8. Add an Action.
-9. Paste the OpenAPI schema.
-10. Configure API key auth as a Bearer token.
-11. Test with: "Give me a site summary for the last 30 days."
+3. Go to Settings -> Analytics Chat and copy the REST base URL.
+4. Open `openapi/analytics-chat-openapi.yaml`.
+5. Replace `https://example.com` with your site URL.
+6. Create a Custom GPT.
+7. Add an Action.
+8. Paste the OpenAPI schema.
+9. Set authentication to none.
+10. Test with: "Give me a site summary for the last 30 days."
 
 ## REST endpoints
 
@@ -60,12 +58,6 @@ All endpoints are under:
 
 ```text
 /wp-json/acfw/v1
-```
-
-Send:
-
-```text
-Authorization: Bearer {api_key}
 ```
 
 Endpoints:
@@ -117,10 +109,7 @@ If the user asks for advice, use the analytics data first, then explain the reco
 ## Privacy and security
 
 - The plugin is read-only.
-- API keys are stored hashed.
-- The full API key is displayed only once when generated.
-- REST requests without a bearer token return `401`.
-- REST requests with an invalid key return `403`.
+- REST endpoints are public.
 - Raw IP addresses, visitor fingerprints, visitor-level browsing history, and WordPress user identities are not exposed.
 - Requests are capped by date range and result count.
 

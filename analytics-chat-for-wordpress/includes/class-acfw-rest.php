@@ -13,7 +13,6 @@ final class ACFW_REST {
 	private const NAMESPACE = 'acfw/v1';
 
 	public function __construct(
-		private readonly ACFW_Auth $auth,
 		private readonly ACFW_Independent_Analytics $analytics
 	) {}
 
@@ -42,8 +41,8 @@ final class ACFW_REST {
 		}
 	}
 
-	public function permission_callback( WP_REST_Request $request ): bool|WP_Error {
-		return $this->auth->authenticate_request( $request );
+	public function permission_callback(): bool {
+		return true;
 	}
 
 	public function site_summary( WP_REST_Request $request ): WP_REST_Response {

@@ -29,9 +29,9 @@ The GPT and plugin are designed not to expose:
 - WordPress user emails, names, or user IDs.
 - Content editing or analytics modification capabilities.
 
-## Authentication
+## Public Endpoint Access
 
-The GPT Action authenticates to the WordPress plugin using an API key configured by the site owner. The WordPress plugin stores API keys as hashes and only displays a generated key once.
+The WordPress plugin exposes public, read-only REST endpoints for aggregated analytics data. These endpoints do not require API keys and are designed not to expose personal, visitor-level, or WordPress user identity data.
 
 ## Use Of Data
 

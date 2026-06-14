@@ -22,7 +22,7 @@ final class ACFW_Plugin {
 		$this->auth      = new ACFW_Auth();
 		$this->analytics = new ACFW_Independent_Analytics();
 		$this->updater   = new ACFW_Updater();
-		$this->rest      = new ACFW_REST( $this->auth, $this->analytics );
+		$this->rest      = new ACFW_REST( $this->analytics );
 		$this->settings  = new ACFW_Settings( $this->auth, $this->analytics );
 	}
 

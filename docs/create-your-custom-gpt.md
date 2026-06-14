@@ -9,19 +9,15 @@ You need:
 - A production WordPress site with HTTPS.
 - Independent Analytics installed and active.
 - Analytics Chat for WordPress installed and active.
-- A generated API key from Settings -> Analytics Chat.
 - A public privacy policy URL for the GPT Action.
 
-## 1. Generate The WordPress API Key
+## 1. Confirm The Public REST Endpoint
 
 In WordPress:
 
 1. Go to Settings -> Analytics Chat.
 2. Confirm Independent Analytics is detected.
-3. Click Generate new API key.
-4. Copy the key immediately.
-
-The full key is shown only once. If it is lost, rotate the key and update the GPT Action authentication.
+3. Copy the REST base URL.
 
 ## 2. Prepare The OpenAPI Schema
 
@@ -63,11 +59,9 @@ In the GPT editor:
 1. Go to Actions.
 2. Create a new action.
 3. Paste the edited OpenAPI schema.
-4. Set authentication to API key.
-5. Choose Bearer token.
-6. Paste the WordPress API key.
-7. Add the privacy policy URL.
-8. Save and test.
+4. Set authentication to none.
+5. Add the privacy policy URL.
+6. Save and test.
 
 ## 5. Test Prompts
 
@@ -104,6 +98,6 @@ How is https://your-site.com/example-page/ performing over the last 30 days?
 
 ## Important Limitation
 
-This no-infrastructure setup connects one GPT Action to one WordPress site.
+This no-infrastructure setup connects one GPT Action to one public WordPress analytics endpoint.
 
-For a public GPT where each user connects their own separate site from inside ChatGPT, you need the hosted bridge architecture described in `docs/public-gpt-bridge-architecture.md`.
+For a public GPT where each user can choose a different site from inside ChatGPT, either create a separate Action/server URL for that site or add a hosted bridge later.

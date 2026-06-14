@@ -1,17 +1,17 @@
 # Analytics Chat for WordPress
 
-Analytics Chat for WordPress is a read-only WordPress plugin that lets a Custom GPT query Independent Analytics data from a live production WordPress site.
+Analytics Chat for WordPress is a public read-only WordPress plugin that lets a Custom GPT query aggregated Independent Analytics data from a live production WordPress site.
 
 Author: Techn  
 Author URL: https://techn.com.au  
-Version: 0.1.7  
+Version: 0.1.8  
 Status: MVP  
 
-The MVP does not require external infrastructure. Each site owner installs the plugin on their own WordPress site, generates an API key, and configures a Custom GPT Action that calls that site directly.
+The MVP does not require external infrastructure or API keys. Each site owner installs the plugin on their own WordPress site and configures a Custom GPT Action that calls that site directly.
 
 ## What It Does
 
-- Gives a GPT structured analytics data from WordPress.
+- Gives a GPT public structured analytics data from WordPress.
 - Uses Independent Analytics / Independent Analytics Pro where available.
 - Returns compact JSON for site summaries, content performance, opportunities, referrers, campaigns, forms, and anonymised journeys.
 - Keeps the GPT focused on interpretation and recommendations rather than dashboard recreation.
@@ -40,20 +40,18 @@ bridge/                        Experimental future hosted bridge, not required f
 
 1. Install and activate Independent Analytics on the WordPress site.
 2. Install and activate the plugin in `analytics-chat-for-wordpress/`.
-3. In WordPress, go to Settings -> Analytics Chat.
-4. Generate an API key and copy it immediately.
-5. Open `openapi/analytics-chat-openapi.yaml`.
-6. Replace `https://example.com` with the production site URL.
-7. Create a Custom GPT in ChatGPT.
-8. Add an Action.
-9. Paste the OpenAPI schema.
-10. Configure API key authentication as Bearer token.
-11. Add the GPT instructions from `docs/gpt-instructions.md`.
-12. Test with: "Give me a site summary for the last 30 days."
+3. In WordPress, go to Settings -> Analytics Chat and copy the REST base URL.
+4. Open `openapi/analytics-chat-openapi.yaml`.
+5. Replace `https://example.com` with the production site URL.
+6. Create a Custom GPT in ChatGPT.
+7. Add an Action.
+8. Paste the OpenAPI schema.
+9. Set authentication to none.
+10. Add the GPT instructions from `docs/gpt-instructions.md`.
+11. Test with: "Give me a site summary for the last 30 days."
 
-OpenAI's current help for GPT Actions states that actions are configured with authentication and an OpenAPI schema, and public GPTs with actions require a valid privacy policy URL:
+OpenAI's current help for GPT Actions states that actions are configured with an OpenAPI schema, and public GPTs with actions require a valid privacy policy URL:
 
-- https://help.openai.com/en/articles/9442513-gpt-actions-authentication
 - https://help.openai.com/en/articles/8554397-creating-a-gpt
 
 ## Direct-Site GPT Model
@@ -72,8 +70,8 @@ This means:
 
 - No hosted bridge is required.
 - The GPT Action server URL is the site owner's own WordPress URL.
-- The site owner controls the API key.
-- A single GPT cannot automatically connect to every user's separate WordPress site unless a hosted bridge or OAuth service is added later.
+- No API key is required.
+- A single GPT can call any site URL supplied in its Action schema, provided that site has this plugin installed and active.
 
 ## REST Endpoints
 
@@ -81,12 +79,6 @@ All endpoints are under:
 
 ```text
 /wp-json/acfw/v1
-```
-
-Send:
-
-```text
-Authorization: Bearer {api_key}
 ```
 
 Endpoints:
@@ -103,10 +95,7 @@ Endpoints:
 ## Privacy and Security
 
 - The plugin is read-only.
-- API keys are stored hashed.
-- The full API key is displayed only once when generated.
-- REST requests without a bearer token return `401`.
-- REST requests with an invalid key return `403`.
+- REST endpoints are public.
 - Raw IP addresses, visitor fingerprints, visitor-level browsing history, and WordPress user identities are not exposed.
 - Requests are capped by date range and result count.
 - Responses are aggregated for GPT interpretation.
@@ -118,7 +107,7 @@ For public use in ChatGPT without extra infrastructure, distribute this as:
 1. A WordPress plugin.
 2. A GPT instruction template.
 3. An OpenAPI Action schema template.
-4. A setup guide for replacing the server URL and configuring the site's API key.
+4. A setup guide for replacing the server URL.
 5. A privacy policy URL for the GPT Action.
 
 The future hosted bridge architecture is documented in `docs/public-gpt-bridge-architecture.md`, but it is not required for the current no-infrastructure release.
@@ -132,7 +121,7 @@ Every plugin change must include:
 - a version bump in `analytics-chat-for-wordpress/analytics-chat-for-wordpress.php`
 - a matching `ACFW_VERSION` bump
 - release notes in `CHANGELOG.md`
-- a GitHub Release tag matching the version, such as `v0.1.7`
+- a GitHub Release tag matching the version, such as `v0.1.8`
 - plugin row metadata should keep the Techn author link and GitHub link visible in WordPress
 - an attached `analytics-chat-for-wordpress.zip` release asset
 
@@ -155,7 +144,7 @@ analytics-chat-for-wordpress/
   openapi/
 ```
 
-4. Create a GitHub Release using a tag such as `v0.1.7`.
+4. Create a GitHub Release using a tag such as `v0.1.8`.
 5. Attach `analytics-chat-for-wordpress.zip` to the release.
 
 WordPress checks the latest GitHub release and only offers an update when the release tag is newer than the installed plugin version and the release includes the ZIP asset.

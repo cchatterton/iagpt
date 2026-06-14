@@ -15,7 +15,6 @@ final class ACFW_Settings {
 	private const OPTION_BRIDGE_STATUS = 'acfw_bridge_status';
 	private const OPTION_BRIDGE_CONNECTED_AT = 'acfw_bridge_connected_at';
 
-	private ?string $generated_key = null;
 	private array $admin_notice = array();
 
 	public function __construct(
@@ -193,23 +192,12 @@ final class ACFW_Settings {
 			return;
 		}
 
-		$transient_key       = 'acfw_generated_key_' . get_current_user_id();
-		$this->generated_key = (string) get_transient( $transient_key );
-		if ( '' !== $this->generated_key ) {
-			delete_transient( $transient_key );
-		}
-
 		$notice_key         = 'acfw_admin_notice_' . get_current_user_id();
 		$this->admin_notice = (array) get_transient( $notice_key );
 		delete_transient( $notice_key );
 
-		$auth                = $this->auth;
 		$analytics           = $this->analytics;
 		$diagnostics         = $this->analytics->diagnostics();
-		$bridge_url          = (string) get_option( self::OPTION_BRIDGE_URL, '' );
-		$bridge_site_id      = (string) get_option( self::OPTION_BRIDGE_SITE_ID, '' );
-		$bridge_status       = (string) get_option( self::OPTION_BRIDGE_STATUS, '' );
-		$bridge_connected_at = (string) get_option( self::OPTION_BRIDGE_CONNECTED_AT, '' );
 
 		require ACFW_PLUGIN_DIR . 'admin/settings-page.php';
 	}

@@ -2,6 +2,12 @@
 
 All notable changes to Analytics Chat for WordPress are recorded here.
 
+## 0.1.8 - 2026-06-14
+
+- Made the analytics REST endpoints public and read-only.
+- Removed bearer authentication from the GPT Action OpenAPI schema.
+- Simplified the settings page around the public REST base URL and aggregate-only privacy notes.
+
 ## 0.1.7 - 2026-06-13
 
 - Accepted GPT-style period values such as `last_30_days` as aliases for `30d`.

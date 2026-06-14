@@ -10,13 +10,11 @@ Use this checklist before sharing a GPT that connects directly to a live WordPre
 - Pretty permalinks and REST API access are working.
 - Settings -> Analytics Chat shows Independent Analytics as available.
 - Maximum period and result limits are acceptable.
-- An API key has been generated and stored securely.
+- Settings -> Analytics Chat shows the public REST base URL.
 
 ## REST API
 
-- Unauthenticated requests return `401`.
-- Requests with an invalid bearer token return `403`.
-- Requests with the valid bearer token return `200`.
+- Public requests return `200` or a clear unavailable/error response.
 - `/wp-json/acfw/v1/site-summary?period=30d` returns structured JSON.
 - `/wp-json/acfw/v1/top-content?period=30d&limit=5` returns rows or a clear unavailable response.
 - `/wp-json/acfw/v1/content-opportunities?period=30d&limit=5` returns prioritised recommendations or a clear unavailable response.
@@ -25,9 +23,7 @@ Use this checklist before sharing a GPT that connects directly to a live WordPre
 ## GPT Builder
 
 - The OpenAPI schema server URL has been changed from `https://example.com` to the production site URL.
-- Authentication is set to API key.
-- API key type is Bearer.
-- The WordPress API key is pasted into the Action auth settings.
+- Authentication is set to none.
 - The privacy policy URL is configured.
 - The GPT instructions from `docs/gpt-instructions.md` are added.
 - Preview tests succeed.
@@ -39,4 +35,4 @@ Use this checklist before sharing a GPT that connects directly to a live WordPre
 - The privacy policy URL is public and accurate.
 - The GPT has been tested with unavailable data cases.
 - The GPT does not ask users for API keys in chat.
-- The GPT does not claim it can connect arbitrary user sites without setup.
+- The GPT is clear that a site must have the plugin installed for analytics calls to work.
